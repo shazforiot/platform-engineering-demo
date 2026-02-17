@@ -1,0 +1,19 @@
+# Kubernetes Service for demo microservice
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-microservice
+  namespace: demo-microservice
+  labels:
+    app: demo-microservice
+    app.kubernetes.io/name: demo-microservice
+spec:
+  selector:
+    app: demo-microservice
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 3000
+      nodePort: 30082
+      protocol: TCP
+      name: http

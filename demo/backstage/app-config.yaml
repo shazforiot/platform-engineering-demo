@@ -1,0 +1,76 @@
+# Backstage App Configuration for IDP Demo
+# Replace all YOUR_* values with your actual credentials
+app:
+  title: My Internal Developer Platform
+  baseUrl: http://localhost:3000
+
+organization:
+  name: My Company
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+    host: 0.0.0.0
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+# GitHub integration — set GITHUB_TOKEN env var
+integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}
+
+# Scaffolder configuration (for software templates)
+scaffolder:
+  defaultAuthor:
+    name: Platform Bot
+    email: platform-bot@company.com
+
+# Service catalog configuration
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow: [Component, System, API, Resource, Location, Group, User, Template]
+  locations:
+    # Register our demo templates
+    - type: file
+      target: ../../backstage-templates/node-microservice/template.yaml
+    # Add your GitHub org catalog here:
+    # - type: github-org
+    #   target: https://github.com/YOUR_ORG
+
+# ArgoCD plugin config (optional but recommended)
+argocd:
+  username: admin
+  password: ${ARGOCD_AUTH_TOKEN}
+  appLocatorMethods:
+    - type: 'config'
+      instances:
+        - name: argocd
+          url: http://localhost:8080
+
+# TechDocs configuration
+techdocs:
+  builder: 'local'
+  generator:
+    runIn: 'local'
+  publisher:
+    type: 'local'
+
+# Auth configuration (GitHub OAuth — optional for local demo)
+# auth:
+#   providers:
+#     github:
+#       development:
+#         clientId: ${AUTH_GITHUB_CLIENT_ID}
+#         clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}

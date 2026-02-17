@@ -1,0 +1,49 @@
+# ArgoCD AppProject for the IDP demo
+# Restricts what the IDP can deploy and where
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: idp-apps
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: IDP-managed applications project
+
+  # Allow from any GitHub repo in your org
+  sourceRepos:
+    - "https://github.com/YOUR_GITHUB_ORG/*"
+
+  # Allow deploying to any namespace in the local cluster
+  destinations:
+    - namespace: "*"
+      server: https://kubernetes.default.svc
+
+  # Allow all standard Kubernetes resources
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+
+  namespaceResourceWhitelist:
+    - group: "apps"
+      kind: Deployment
+    - group: "apps"
+      kind: StatefulSet
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: ServiceAccount
+    - group: networking.k8s.io
+      kind: Ingress
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+
+  # Sync window: allow all syncs (tighten for production)
+  syncWindows:
+    - kind: allow
+      schedule: "* * * * *"
+      duration: 24h
+      applications:
+        - "*"
