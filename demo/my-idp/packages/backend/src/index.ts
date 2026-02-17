@@ -48,16 +48,14 @@ backend.add(
 // search plugin
 backend.add(import('@backstage/plugin-search-backend'));
 
-// search engine
-// See https://backstage.io/docs/features/search/search-engines
-backend.add(import('@backstage/plugin-search-backend-module-pg'));
+// search engine: using default built-in Lunr (in-memory), no extra module needed
 
 // search collators
 backend.add(import('@backstage/plugin-search-backend-module-catalog'));
 backend.add(import('@backstage/plugin-search-backend-module-techdocs'));
 
-// kubernetes plugin
-backend.add(import('@backstage/plugin-kubernetes-backend'));
+// kubernetes plugin - requires 'kubernetes:' section in app-config.yaml
+// backend.add(import('@backstage/plugin-kubernetes-backend'));
 
 // notifications and signals plugins
 backend.add(import('@backstage/plugin-notifications-backend'));
