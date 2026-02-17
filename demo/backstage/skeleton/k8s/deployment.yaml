@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${{ values.name }}
+  namespace: ${{ values.name }}
+  labels:
+    app: ${{ values.name }}
+spec:
+  replicas: ${{ values.replicas }}
+  selector:
+    matchLabels:
+      app: ${{ values.name }}
+  template:
+    metadata:
+      labels:
+        app: ${{ values.name }}
+    spec:
+      containers:
+        - name: ${{ values.name }}
+          image: ${{ values.destination.owner }}/${{ values.name }}:latest
+          ports:
+            - containerPort: ${{ values.port }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: ${{ values.port }}
