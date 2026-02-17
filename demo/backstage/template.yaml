@@ -117,6 +117,7 @@ spec:
       action: catalog:register
       input:
         catalogInfoUrl: ${{ steps.publish-github.output.repoContentsUrl }}/catalog-info.yaml
+        optional: true
 
   # ─── OUTPUT ───────────────────────────────────────────────────
   output:
