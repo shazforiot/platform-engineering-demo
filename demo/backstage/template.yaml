@@ -101,7 +101,6 @@ spec:
       name: Create GitHub Repository
       action: publish:github
       input:
-        allowedHosts: ['github.com']
         description: ${{ parameters.description }}
         repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: main
@@ -111,20 +110,7 @@ spec:
           - kubernetes
           - idp-managed
 
-    # Step 3: Create ArgoCD Application
-    - id: create-argocd-app
-      name: Register in ArgoCD
-      action: argocd:create-resources
-      input:
-        appName: ${{ parameters.name }}
-        argoInstance: argocd
-        namespace: ${{ parameters.name }}
-        repoUrl: ${{ steps.publish-github.output.remoteUrl }}
-        labelValue: ${{ parameters.name }}
-        path: k8s/overlays/${{ parameters.environment }}
-        project: idp-apps
-
-    # Step 4: Register in Backstage Catalog
+    # Step 3: Register in Backstage Catalog
     - id: register-catalog
       name: Register in Service Catalog
       action: catalog:register
@@ -141,6 +127,4 @@ spec:
       - title: Open in Backstage Catalog
         icon: catalog
         entityRef: ${{ steps.register-catalog.output.entityRef }}
-      - title: ArgoCD Application
-        url: http://localhost:8080/applications/${{ parameters.name }}
-        icon: dashboard
+      # ArgoCD step disabled - install @roadiehq/scaffolder-backend-module-argocd to re-enable
