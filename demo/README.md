@@ -148,10 +148,12 @@ rm -rf ~/.npm/_npx  #Clear Cache
 # Install dependencies
   npm install -g yarn@1.22.22
   yarn --version
-npx @backstage/create-app@latest --name my-idp
-npx @backstage/create-app
+npx @backstage/create-app@latest --name my-idp #or below option
+npx @backstage/create-app # when asked enter my-idp as app name
 cd my-idp
-rm -rf my-idp # remove the app
+
+# Remove the app by deleting the folder
+rm -rf my-idp 
 
 
 # Copy our custom app-config
@@ -159,7 +161,7 @@ cp ../backstage/app-config.yaml ./app-config.yaml
 
 # Start Backstage
 export GITHUB_TOKEN=ghp_your_token_here
-yarn dev
+yarn start
 ```
 
 Open Backstage: **http://localhost:3000**
