@@ -116,8 +116,7 @@ spec:
       name: Register in Service Catalog
       action: catalog:register
       input:
-        repoContentsUrl: ${{ steps.publish-github.output.repoContentsUrl }}
-        catalogInfoPath: /catalog-info.yaml
+        catalogInfoUrl: ${{ steps.publish-github.output.repoContentsUrl }}/catalog-info.yaml
 
   # ─── OUTPUT ───────────────────────────────────────────────────
   output:
