@@ -1,7 +1,6 @@
-
 # Backstage Software Template — Node.js Microservice
 # This template scaffolds a production-ready Node.js service
-# with Kubernetes manifests, GitHub Actions CI, and ArgoCD deployment
+# with Kubernetes manifests, GitHub Actions CI, and ArgoCD GitOps deployment
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
@@ -17,8 +16,6 @@ metadata:
     - kubernetes
     - argocd
     - gitops
-  annotations:
-    backstage.io/techdocs-ref: dir:.
 spec:
   owner: platform-team
   type: service
@@ -82,7 +79,7 @@ spec:
 
   # ─── SCAFFOLDER STEPS ─────────────────────────────────────────
   steps:
-    # Step 1: Fetch the skeleton template
+    # Step 1: Render the skeleton with form values
     - id: fetch-template
       name: Fetch Base Template
       action: fetch:template
@@ -97,7 +94,7 @@ spec:
           environment: ${{ parameters.environment }}
           destination: ${{ parameters.repoUrl | parseRepoUrl }}
 
-    # Step 2: Publish to GitHub
+    # Step 2: Create GitHub repo with all rendered files
     - id: publish-github
       name: Create GitHub Repository
       action: publish:github
@@ -105,28 +102,35 @@ spec:
         description: ${{ parameters.description }}
         repoUrl: ${{ parameters.repoUrl }}
         defaultBranch: main
-        repoVisibility: private
+        repoVisibility: public
         topics:
           - microservice
           - kubernetes
           - idp-managed
 
-    # Step 3: Register in Backstage Catalog
+    # Step 3: Register service in Backstage catalog
     - id: register-catalog
       name: Register in Service Catalog
       action: catalog:register
       input:
-        catalogInfoUrl: ${{ steps.publish-github.output.repoContentsUrl }}/catalog-info.yaml
+        catalogInfoUrl: ${{ steps['publish-github'].output.repoContentsUrl }}/blob/main/catalog-info.yaml
         optional: true
 
   # ─── OUTPUT ───────────────────────────────────────────────────
   output:
     links:
       - title: GitHub Repository
-        url: ${{ steps.publish-github.output.remoteUrl }}
+        url: ${{ steps['publish-github'].output.remoteUrl }}
         icon: github
       - title: Open in Backstage Catalog
         icon: catalog
-        entityRef: ${{ steps.register-catalog.output.entityRef }}
-      # ArgoCD step disabled - install @roadiehq/scaffolder-backend-module-argocd to re-enable
-
+        entityRef: ${{ steps['register-catalog'].output.entityRef }}
+    text:
+      - title: Next Step — Connect ArgoCD
+        content: |
+          Your service repo is ready. To deploy to Kubernetes, run:
+          ```
+          kubectl apply -f argocd-app.yaml
+          ```
+          from the root of your new GitHub repo. ArgoCD will automatically
+          sync your K8s manifests and deploy the service.

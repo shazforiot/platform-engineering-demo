@@ -1,5 +1,4 @@
 # Backstage App Configuration for IDP Demo
-# Replace all YOUR_* values with your actual credentials
 app:
   title: My Internal Developer Platform
   baseUrl: http://localhost:3000
@@ -22,19 +21,26 @@ backend:
     client: better-sqlite3
     connection: ':memory:'
 
-# GitHub integration — set GITHUB_TOKEN env var
+# GitHub integration - set GITHUB_TOKEN env var before running yarn start
 integrations:
   github:
     - host: github.com
       token: ${GITHUB_TOKEN}
 
-# Scaffolder configuration (for software templates)
+# Auth - enable guest login for local development
+auth:
+  environment: development
+  providers:
+    guest:
+      dangerouslyAllowOutsideDevelopment: true
+
+# Scaffolder configuration
 scaffolder:
   defaultAuthor:
     name: Platform Bot
     email: platform-bot@company.com
 
-# Service catalog configuration
+# Service catalog
 catalog:
   import:
     entityFilename: catalog-info.yaml
@@ -42,35 +48,17 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location, Group, User, Template]
   locations:
-    # Register our demo templates
-    - type: file
-      target: ../../backstage-templates/node-microservice/template.yaml
-    # Add your GitHub org catalog here:
-    # - type: github-org
-    #   target: https://github.com/YOUR_ORG
+    # Register the Node.js Microservice template
+    # Replace YOUR_GITHUB_ORG with your GitHub username/org
+    - type: url
+      target: https://github.com/YOUR_GITHUB_ORG/platform-engineering-demo/blob/main/demo/backstage/template.yaml
+      rules:
+        - allow: [Template]
 
-# ArgoCD plugin config (optional but recommended)
-argocd:
-  username: admin
-  password: ${ARGOCD_AUTH_TOKEN}
-  appLocatorMethods:
-    - type: 'config'
-      instances:
-        - name: argocd
-          url: http://localhost:8080
-
-# TechDocs configuration
+# TechDocs
 techdocs:
   builder: 'local'
   generator:
     runIn: 'local'
   publisher:
     type: 'local'
-
-# Auth configuration (GitHub OAuth — optional for local demo)
-# auth:
-#   providers:
-#     github:
-#       development:
-#         clientId: ${AUTH_GITHUB_CLIENT_ID}
-#         clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
