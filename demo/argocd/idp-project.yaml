@@ -10,9 +10,9 @@ metadata:
 spec:
   description: IDP-managed applications project
 
-  # Allow from any GitHub repo in your org
+  # Allow from any GitHub repo (use "https://github.com/YOUR_ORG/*" to restrict)
   sourceRepos:
-    - "https://github.com/YOUR_GITHUB_ORG/*"
+    - "*"
 
   # Allow deploying to any namespace in the local cluster
   destinations:
