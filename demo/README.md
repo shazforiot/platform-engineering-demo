@@ -1,7 +1,7 @@
 # Platform Engineering with K8s — Demo Project
 ## Build an Internal Developer Platform from Scratch
 
-> **Video:** [Platform Engineering with K8s — Build an Internal Developer Platform (2026)](https://youtube.com)
+> **Video:** [Platform Engineering with K8s — Build an Internal Developer Platform (2026)](https://youtube.com/@thetips4you)
 
 ---
 
@@ -245,7 +245,26 @@ kubectl rollout status deployment/demo-microservice -n demo-microservice
 # Test the service
 curl http://localhost:8888
 ```
+#OR
+# Clone your new repo
+git clone https://github.com/shazforiot/payment-service ~/payment-service
+cd ~/payment-service
 
+# Tell ArgoCD to watch and deploy it
+kubectl apply -f argocd-app.yaml
+
+Then verify ArgoCD picked it up:
+
+kubectl get applications -n argocd
+argocd app get payment-service
+
+And check pods are running:
+
+kubectl get pods -n payment-service
+
+What to expect:
+- ArgoCD UI at http://localhost:8080 → your service appears and turns green
+- kubectl get pods shows Running status
 ---
 
 ## Cleanup
